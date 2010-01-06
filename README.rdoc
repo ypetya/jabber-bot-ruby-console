@@ -25,7 +25,7 @@ run the bot!
 <Peter> inspect
 <jbot> #<AnswerBot:0x83eb414 @break=false, @im=Jabber::Simple jbot...@....com, @filters={:on_new_message=>[:eval_command], :on_status_change=>[], :on_new_buddy=>[:default_new_buddy]}> 
 
-1. first: I need some feedback from everybody, contacting the bot. so I'll make a function to notify me:
+0. first: I need some feedback from everybody, contacting the bot. so I'll make a function to notify me:
 
 <Peter> def notify_me ki,mit; @im.deliver "yp..@....com", "#{ki.node}: #{mit}"; end
 <jbot> null
@@ -45,7 +45,7 @@ We can use some anonymous methods too in filters...
 ...
 
 
-2. second
+0. second
 
 okay.
 now what about some remote procedure calls or maybe it is some more with ruby...
