@@ -1,0 +1,23 @@
+== USAGE
+
+=== SETTING UP PRERESQUITES
+
+step 1.
+
+gem install xmpp4r-simple
+
+step 2.
+
+setup your main jabber account (wich the master should be) in the global variable @@master
+
+step 3.
+
+setup @@settings variable like this:
+
+@@settings = { :jabberbot => ['myaccount','mypassword'] }
+
+run the bot!
+
+== EXAMPLE
+
+...
