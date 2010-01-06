@@ -17,6 +17,7 @@ load '/etc/my_ruby_scripts/settings.rb'
 
 DIR = ENV['HOME'] || ENV['USERPROFILE'] || ENV['HOMEPATH']
 
+require 'rubygems'
 require 'json'
 require 'xmpp4r-simple'
 
