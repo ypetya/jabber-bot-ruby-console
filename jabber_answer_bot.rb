@@ -112,7 +112,7 @@ class AnswerBot
   def eval_command who,what
     if [@@master].flatten.include?("#{who.node}@#{who.domain}")
       res = eval(what)
-      @im.deliver( who, res.is_a?( String) ? res : res.to_json)
+      @im.deliver( who, res.is_a?(String) ? res : res.to_json)
     end
   end
 
