@@ -18,11 +18,19 @@ def imdb_search_by_title criteria
       :year, :director, :cast_members, :poster,
       :tagline, :plot, :rating, :url].each do |prop|
 
-      movie_str += "#{prop} : #{movie.send( prop )}\n"
+      res = movie.send( prop )
+      res_str = res.is_a? Array ? res.join(',') : res
+      movie_str += "#{prop} : #{res_str}\n"
       
     end
 
     ret += "\n" + movie_str
   end
   ret
+end
+
+@filters[:on_new_message] << lambda do |who,what|
+  if what =~ /^imdb \w+/
+    @im.deliver( who,imdb_search_by_title( what[5.. what.length-1]))
+  end
 end
