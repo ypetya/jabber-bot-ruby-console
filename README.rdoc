@@ -51,3 +51,22 @@ okay.
 now what about some remote procedure calls or maybe it is some more with ruby...
 
 
+== PLUGINS
+
+You can edit or create your own plugins. thats very easy.
+
+just create a function in plugins/<some_name>.rb
+
+0. step 1: create your own plugin
+
+and on the end of the file add your calls / matchers or what you need to do to the appropiate filter,
+to execute on event.
+
+0. step 2: load plugin into bot, while online
+
+as master, load the plugin into the memory:
+
+load 'plugins/<some_name>.rb'
+
+
+enjoy!
