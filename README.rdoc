@@ -21,21 +21,21 @@ run the bot!
 == EXAMPLE
 
 0. run some commands
-
+<tt>
   <Peter> inspect
   <jbot> #<AnswerBot:0x83eb414 @break=false, @im=Jabber::Simple jbot...@....com, @filters={:on_new_message=>[:eval_command], :on_status_change=>[], :on_new_buddy=>[:default_new_buddy]}> 
-
+</tt>
 0. first: I need some feedback from everybody, contacting the bot. so I'll make a function to notify me:
-
+<tt>
   <Peter> def notify_me ki,mit; @im.deliver "yp..@....com", "#{ki.node}: #{mit}"; end
   <jbot> null
-
+</tt>
 okay. now try that filter thing:
-
+<tt>
   <Peter> @filter[:on_new_message] << :notify_me
   <jbot> [ :eval_command, :notify_me ]
   <jbot> node: def notify_me ki,mit; @im.deliver "yp..@....com", "#{ki.node}: #{mit}"; end
-
+</tt>
 whow. that last line! worked!
 
 We can use some anonymous methods too in filters...
@@ -65,8 +65,8 @@ to execute on event.
 0. step 2: load plugin into bot, while online
 
 as master, load the plugin into the memory:
-
+<tt>
   <Peter> load 'plugins/<some_name>.rb'
-
+</tt>
 
 enjoy!
