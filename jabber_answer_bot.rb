@@ -23,7 +23,7 @@ require 'xmpp4r-simple'
 
 class AnswerBot
  
-  attr_accessor :im
+  attr_accessor :im,:filters
 
   def initialize user, pwd
     @im = Jabber::Simple.new(user,pwd)
@@ -166,6 +166,6 @@ EOT
   end
 end
 
-@@b = AnswerBot.new(*@@settings[:jabberbot])
-@@b.run
+@@answer_bot = AnswerBot.new(*@@settings[:jabberbot])
+@@answer_bot.run
 

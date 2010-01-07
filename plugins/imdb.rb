@@ -29,7 +29,7 @@ def imdb_search_by_title criteria
   ret
 end
 
-@filters[:on_new_message] << lambda do |who,what|
+@@answer_bot.filters[:on_new_message] << lambda do |who,what|
   if what =~ /^imdb \w+/
     @im.deliver( who,imdb_search_by_title( what[5.. (what.length-1)]))
   end
