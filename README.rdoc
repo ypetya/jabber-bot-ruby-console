@@ -22,19 +22,19 @@ run the bot!
 
 0. run some commands
 
-<Peter> inspect
-<jbot> #<AnswerBot:0x83eb414 @break=false, @im=Jabber::Simple jbot...@....com, @filters={:on_new_message=>[:eval_command], :on_status_change=>[], :on_new_buddy=>[:default_new_buddy]}> 
+  <Peter> inspect
+  <jbot> #<AnswerBot:0x83eb414 @break=false, @im=Jabber::Simple jbot...@....com, @filters={:on_new_message=>[:eval_command], :on_status_change=>[], :on_new_buddy=>[:default_new_buddy]}> 
 
 0. first: I need some feedback from everybody, contacting the bot. so I'll make a function to notify me:
 
-<Peter> def notify_me ki,mit; @im.deliver "yp..@....com", "#{ki.node}: #{mit}"; end
-<jbot> null
+  <Peter> def notify_me ki,mit; @im.deliver "yp..@....com", "#{ki.node}: #{mit}"; end
+  <jbot> null
 
 okay. now try that filter thing:
 
-<Peter> @filter[:on_new_message] << :notify_me
-<jbot> [ :eval_command, :notify_me ]
-<jbot> node: def notify_me ki,mit; @im.deliver "yp..@....com", "#{ki.node}: #{mit}"; end
+  <Peter> @filter[:on_new_message] << :notify_me
+  <jbot> [ :eval_command, :notify_me ]
+  <jbot> node: def notify_me ki,mit; @im.deliver "yp..@....com", "#{ki.node}: #{mit}"; end
 
 whow. that last line! worked!
 
@@ -66,7 +66,7 @@ to execute on event.
 
 as master, load the plugin into the memory:
 
-load 'plugins/<some_name>.rb'
+  <Peter> load 'plugins/<some_name>.rb'
 
 
 enjoy!
