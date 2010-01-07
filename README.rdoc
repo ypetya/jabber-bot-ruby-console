@@ -20,7 +20,7 @@ run the bot!
 
 == EXAMPLE
 
-0. run some commands
+0. run some commands, to explore it...
 
   <Peter> inspect
   <jbot> #<AnswerBot:0x83eb414 @break=false, @im=Jabber::Simple jbot...@....com, @filters={:on_new_message=>[:eval_command], :on_status_change=>[], :on_new_buddy=>[:default_new_buddy]}> 
@@ -40,8 +40,9 @@ whow. that last line! worked!
 
 We can use some anonymous methods too in filters...
 
-@filter[:on_new_message] << lambda{|who_sent,what| @im.deliver who_sent,"echo: #{what}"}
+  @filters[:on_new_message] << lambda{ |who,what| if what == "who are you?"; @im.deliver who, inspect;end; } # :)
 
+(becouse some of my friends asked me, who is that different secret guy on gtalk?)
 ...
 
 
