@@ -29,8 +29,10 @@ def imdb_search_by_title criteria
   ret
 end
 
-@@answer_bot.filters[:on_new_message] << lambda do |who,what|
-  if what =~ /^imdb/
-    @@answer_bot.im.deliver( who,imdb_search_by_title( what[5.. (what.length-1)]))
+if defined? @@answer_bot
+  @@answer_bot.filters[:on_new_message] << lambda do |who,what|
+    if m = what.match(/^imdb\s(.*)/)
+      @@answer_bot.im.deliver( who,imdb_search_by_title(m[1]))
+    end
   end
 end
