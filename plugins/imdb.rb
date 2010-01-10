@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
 require 'rubygems'
-#http://github.com/ariejan/imdb
+# http://github.com/ypetya/imdb
 require 'imdb'
 
 def imdb_search_by_title criteria
