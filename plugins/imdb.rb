@@ -18,7 +18,7 @@ def imdb_search_by_title criteria
       :year, :director, :cast_members,
       :tagline, :plot, :url, :produced_by,
       :film_editing_by, :art_direction_by,
-      :original_music_by, :music_department,
+      :original_music_by, :music_department
     ].each do |prop|
 
       res = movie.send( prop )
@@ -26,8 +26,6 @@ def imdb_search_by_title criteria
       movie_str += "#{prop} : #{res_str}\n"
       
     end
-
-    credits = Imdb::Credits( movie.id
 
     ret += "\n" + movie_str
   end
