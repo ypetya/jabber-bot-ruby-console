@@ -15,14 +15,19 @@ def imdb_search_by_title criteria
     movie_str = ""
 
     [ :title, :length, :genres, 
-      :year, :director, :cast_members, :poster,
-      :tagline, :plot, :rating, :url].each do |prop|
+      :year, :director, :cast_members,
+      :tagline, :plot, :url, :produced_by,
+      :film_editing_by, :art_direction_by,
+      :original_music_by, :music_department,
+    ].each do |prop|
 
       res = movie.send( prop )
       res_str = res.is_a?(Array) ? res.join(',') : res
       movie_str += "#{prop} : #{res_str}\n"
       
     end
+
+    credits = Imdb::Credits( movie.id
 
     ret += "\n" + movie_str
   end
