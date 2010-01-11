@@ -34,19 +34,23 @@ class AnswerBot
 
   def reset_filters!
     @filters = {
-          :on_status_change => [],
-          :on_new_buddy => [ :default_new_buddy ],
-          :on_new_message => [ :eval_command ]
+#          :on_status_change => [],
+#          :on_new_buddy => [],
+          :on_new_message => [ :eval_command ],
+          :on_tick => [:parse_messages]
         }
   end
 
   def add_filter key, the_proc
+    @filters[key] ||= []
     unless @filters[key]
-      false
-    else
       @filters[key] << the_proc
-      true
     end
+  end
+
+  def remove_filter key, the_proc_key
+    @filters[key] ||=[]
+    @filters[key].delete the_proc
   end
 
   def stop!(*args)
@@ -74,29 +78,14 @@ class AnswerBot
   protected
 
   def debug msg
-    case @@master
-    when String
-      @im.deliver @@master, msg
-    when Array
-      @@master.each{|m| @im.deliver m,msg }
-    else
-      puts " DEBUG : #{msg} "
-    end
+    @@master.each{|m| @im.deliver m,msg }
   end
 
-  def presence_updates!
-    @im.presence_updates.each do |x|
-      puts " * #{x[0]} is #{x[1]} : #{x[2]} "
-      yield *x
-    end
-  end
-
-  def accept_buddies!
-    @im.new_subscriptions.each do |subscription|
-      subscription.each do |elem|
-        if elem.is_a? Jabber::Roster::Helper::RosterItem
-          puts "Subscribed: #{ elem.jid.to_s }!"
-          yield( elem.jid )
+  def parse_messages
+    parse_messages! do |*params|
+      @filters[:on_new_message].each do |filter|
+        with_exceptions do
+          run_filter( filter,*params )
         end
       end
     end
@@ -118,12 +107,16 @@ class AnswerBot
   end
 
   def with_exceptions
-    yield
-  rescue Exception => e
-    debug <<-EOT 
-  #{e.message}
-  #{e.backtrace.join("\n")}
-EOT
+    Thread.new do
+      begin
+        yield
+      rescue Exception => e
+        debug <<-EOT 
+        #{e.message}
+        #{e.backtrace.join("\n")}
+        EOT
+      end
+    end
   end
 
   def run_filter filter,*params
@@ -135,32 +128,12 @@ EOT
     end
   end
 
-  def default_new_buddy new_buddy
-    @im.deliver new_buddy.to_s,"Hi #{new_buddy.node}!"
-  end
-
+  # okay, so there are some functions to call 
+  # other event handlers too :)
   def main_loop
-    presence_updates! do |*params|
-      @filters[:on_status_change].each do |filter|
-        with_exceptions do
-          run_filter filter,*params
-        end
-      end
-    end
-
-    accept_buddies! do |new_buddy|
-      @filters[:on_new_buddy].each do |filter|
-        with_exceptions do
-          run_filter filter,new_buddy
-        end
-      end
-    end
-
-    parse_messages! do |*params|
-      @filters[:on_new_message].each do |filter|
-        with_exceptions do
-          run_filter( filter,*params )
-        end
+    @filters[:on_tick].each do |filter|
+      with_exceptions do
+        run_filter filter
       end
     end
   end
