@@ -56,9 +56,11 @@ class AnswerBot
   def stop!(*args)
     debug "AnswerBot: Received SIGINT, exiting."
     @break = true
+    exit(0)
   end
   
   def run
+    sleep 1
     debug 'AnswerBot: Started!'
     @break = false
 

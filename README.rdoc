@@ -71,3 +71,10 @@ as master, load the plugin into the memory:
 
 
 enjoy!
+
+
+== NEW IDEAS
+
+0. pieces interpreter
+0. coca cola app
+0. random connect friends
