@@ -3,7 +3,7 @@
 # it will log out every message 
 
 def log_message who,what
-  File.open('jabber_bot.log','w') do |f|
+  File.open('jabber_bot.log','a') do |f|
     f.puts "#{Time.now.strftime( '%Y.%m.%d. %H:%M:%S')} #{who}: #{what}"
   end
 end
