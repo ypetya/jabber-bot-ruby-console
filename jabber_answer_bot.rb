@@ -95,7 +95,7 @@ class AnswerBot
 
   def parse_messages!
     @im.received_messages.select{|m| m.type == :chat}.each do |message|
-      puts "Received: #{message.body[0..25]}"
+      puts "Received: #{message.from.node}: #{message.body[0..25]}"
       yield(message.from,message.body)
     end
   end
@@ -108,15 +108,27 @@ class AnswerBot
     end
   end
 
-  def with_exceptions
-    Thread.new do
+  def handle_exception e
+    debug <<-EOT 
+    #{e.message}
+    #{e.backtrace.join("\n")}
+    EOT
+  end
+
+  def with_exceptions with_new_thread = true
+    if with_new_thread
+      Thread.new do
+        begin
+          yield
+        rescue Exception => e
+          handle_exception e
+        end
+      end
+    else
       begin
         yield
       rescue Exception => e
-        debug <<-EOT 
-        #{e.message}
-        #{e.backtrace.join("\n")}
-        EOT
+        handle_exception e
       end
     end
   end
@@ -134,7 +146,7 @@ class AnswerBot
   # other event handlers too :)
   def main_loop
     @filters[:on_tick].each do |filter|
-      with_exceptions do
+      with_exceptions(false) do
         run_filter filter
       end
     end
