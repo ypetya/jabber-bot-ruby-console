@@ -16,11 +16,12 @@ def post_code_to_coke_hu who,msg
     if not o.forms.empty? and o.forms.first.name == 'loginbox'
       l = o.forms.first
       l.username,l.password = *@@settings[:coke_hu]
+      sleep 1
       o = l.submit
     end
 
     codes.each do |code|
-      @@agent.post('https://secure.coke.hu','action' => 'registerwincode', 'stayloggedin' => 'true', 'wincode' => code)
+      @@agent.post('https://secure.coke.hu/MainServlet','action' => 'registerwincode', 'stayloggedin' => 'true', 'wincode' => code)
       puts "posted code: #{code}"
     end
 
