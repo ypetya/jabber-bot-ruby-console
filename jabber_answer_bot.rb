@@ -7,18 +7,20 @@
 # @@masters can evaulate ruby code inside. its like script injection, but more. 
 # every master gots the exceptions and the backtraces.
 # if you are a @@master you can invite others to master. or even more.
-# evaulated code is always passed back in JSON format.
 # do something! develop in the chat window! solve problems!
 # like make a repository! for your new plugins! remote!
 
+
+# == XMPP settings
+# contains @@settings={ :jabberbot => [ 'myjabber_id', 'myjabber_pwd' ] }
 load '/etc/my_ruby_scripts/settings.rb'
 
+# === XMPP bot master jabber id
 @@master = ['ypetya@gmail.com']
 
 DIR = ENV['HOME'] || ENV['USERPROFILE'] || ENV['HOMEPATH']
 
 require 'rubygems'
-require 'json'
 require 'xmpp4r-simple'
 
 class AnswerBot
@@ -34,8 +36,8 @@ class AnswerBot
 
   def reset_filters!
     @filters = {
-#          :on_status_change => [],
-#          :on_new_buddy => [],
+#          :on_status_change => [], # event handlers can be loaded with: require 'core/status_change'
+#          :on_new_buddy => [], # event handlers can be loaded with: require 'core/new_buddy'
           :on_new_message => [ :eval_command ],
           :on_tick => [:parse_messages]
         }
@@ -43,7 +45,7 @@ class AnswerBot
 
   def add_filter key, the_proc
     @filters[key] ||= []
-    unless @filters[key]
+    unless @filters[key].include? the_proc
       @filters[key] << the_proc
     end
   end
@@ -95,16 +97,16 @@ class AnswerBot
 
   def parse_messages!
     @im.received_messages.select{|m| m.type == :chat}.each do |message|
-      puts "Received: #{message.from.node}: #{message.body[0..25]}"
+      puts "Received: #{message.from.node}: #{message.body[0..250]}"
       yield(message.from,message.body)
     end
   end
 
   # this is the main why. thatswhy we've written this code.
   def eval_command who,what
-    if [@@master].flatten.include?("#{who.node}@#{who.domain}")
+    if @@master.include?("#{who.node}@#{who.domain}")
       res = eval(what)
-      @im.deliver( who, res.is_a?(String) ? res : res.to_json)
+      @im.deliver( who, res.is_a?(String) ? res : res.inspect)
     end
   end
 

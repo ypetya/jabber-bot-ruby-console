@@ -8,6 +8,6 @@ def default_new_buddy new_buddy
   @im.deliver new_buddy.to_s,"Hi #{new_buddy.node}!"
 end
 
-if defined?( @@answer_bot ) and not @@answer_bot.filters[:on_new_buddy].include?( :default_new_buddy )
-  @@answer_bot.filters[:on_new_buddy].unshift! :default_new_buddy
+if defined?( @@answer_bot )
+  @@answer_bot.add_filter :on_new_buddy,:default_new_buddy
 end

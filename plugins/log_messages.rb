@@ -9,5 +9,5 @@ def log_message who,what
 end
 
 if defined?( @@answer_bot ) and not @@answer_bot.filters[:on_new_message].include?( :log_message )
-  @@answer_bot.filters[:on_new_message].unshift! :log_message
+  @@answer_bot.filters[:on_new_message].unshift :log_message
 end
