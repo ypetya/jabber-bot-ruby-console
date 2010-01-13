@@ -1,4 +1,4 @@
-#!/user/bin/env ruby
+#!/usr/bin/env ruby
 
 # gem install sishen-rtranslate --source http://gems.github.com --no-ri --no-rdoc
 # >= 1.2

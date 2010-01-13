@@ -34,27 +34,33 @@ class AnswerBot
 
   def reset_filters!
     @filters = {
-          :on_status_change => [],
-          :on_new_buddy => [ :default_new_buddy ],
-          :on_new_message => [ :eval_command ]
+#          :on_status_change => [],
+#          :on_new_buddy => [],
+          :on_new_message => [ :eval_command ],
+          :on_tick => [:parse_messages]
         }
   end
 
   def add_filter key, the_proc
+    @filters[key] ||= []
     unless @filters[key]
-      false
-    else
       @filters[key] << the_proc
-      true
     end
+  end
+
+  def remove_filter key, the_proc_key
+    @filters[key] ||=[]
+    @filters[key].delete the_proc
   end
 
   def stop!(*args)
     debug "AnswerBot: Received SIGINT, exiting."
     @break = true
+    exit(0)
   end
   
   def run
+    sleep 1
     debug 'AnswerBot: Started!'
     @break = false
 
@@ -74,29 +80,14 @@ class AnswerBot
   protected
 
   def debug msg
-    case @@master
-    when String
-      @im.deliver @@master, msg
-    when Array
-      @@master.each{|m| @im.deliver m,msg }
-    else
-      puts " DEBUG : #{msg} "
-    end
+    @@master.each{|m| @im.deliver m,msg }
   end
 
-  def presence_updates!
-    @im.presence_updates.each do |x|
-      puts " * #{x[0]} is #{x[1]} : #{x[2]} "
-      yield *x
-    end
-  end
-
-  def accept_buddies!
-    @im.new_subscriptions.each do |subscription|
-      subscription.each do |elem|
-        if elem.is_a? Jabber::Roster::Helper::RosterItem
-          puts "Subscribed: #{ elem.jid.to_s }!"
-          yield( elem.jid )
+  def parse_messages
+    parse_messages! do |*params|
+      @filters[:on_new_message].each do |filter|
+        with_exceptions do
+          run_filter( filter,*params )
         end
       end
     end
@@ -104,7 +95,7 @@ class AnswerBot
 
   def parse_messages!
     @im.received_messages.select{|m| m.type == :chat}.each do |message|
-      puts "Received: #{message.body[0..25]}"
+      puts "Received: #{message.from.node}: #{message.body[0..25]}"
       yield(message.from,message.body)
     end
   end
@@ -117,13 +108,29 @@ class AnswerBot
     end
   end
 
-  def with_exceptions
-    yield
-  rescue Exception => e
+  def handle_exception e
     debug <<-EOT 
-  #{e.message}
-  #{e.backtrace.join("\n")}
-EOT
+    #{e.message}
+    #{e.backtrace.join("\n")}
+    EOT
+  end
+
+  def with_exceptions with_new_thread = true
+    if with_new_thread
+      Thread.new do
+        begin
+          yield
+        rescue Exception => e
+          handle_exception e
+        end
+      end
+    else
+      begin
+        yield
+      rescue Exception => e
+        handle_exception e
+      end
+    end
   end
 
   def run_filter filter,*params
@@ -135,32 +142,12 @@ EOT
     end
   end
 
-  def default_new_buddy new_buddy
-    @im.deliver new_buddy.to_s,"Hi #{new_buddy.node}!"
-  end
-
+  # okay, so there are some functions to call 
+  # other event handlers too :)
   def main_loop
-    presence_updates! do |*params|
-      @filters[:on_status_change].each do |filter|
-        with_exceptions do
-          run_filter filter,*params
-        end
-      end
-    end
-
-    accept_buddies! do |new_buddy|
-      @filters[:on_new_buddy].each do |filter|
-        with_exceptions do
-          run_filter filter,new_buddy
-        end
-      end
-    end
-
-    parse_messages! do |*params|
-      @filters[:on_new_message].each do |filter|
-        with_exceptions do
-          run_filter( filter,*params )
-        end
+    @filters[:on_tick].each do |filter|
+      with_exceptions(false) do
+        run_filter filter
       end
     end
   end
