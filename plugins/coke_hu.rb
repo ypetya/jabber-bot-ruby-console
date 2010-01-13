@@ -9,7 +9,7 @@ require 'mechanize'
 
 def post_code_to_coke_hu who,msg
   if match_data = msg.match(/^kupak\s+(.*)/)
-    codes = match_data[1].split(",").split(" ").split(";")
+    codes = match_data[1].split(" ")
 
     o = @@agent.get 'http://coke.hu'
 
