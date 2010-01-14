@@ -13,12 +13,14 @@ def post_code_to_coke_hu who,msg
 
     o = @@agent.get 'http://coke.hu'
 
-    if not o.forms.empty? and o.forms.first.name == 'loginbox'
-      l = o.forms.first
-      l.username,l.password = *@@settings[:coke_hu]
-      sleep 1
-      o = l.submit
-    end
+    o1 = if not o.forms.empty? and o.forms.first.name == 'loginbox'
+           l = o.forms.first
+           l.username,l.password = *@@settings[:coke_hu]
+           sleep 1
+           l.submit
+         else
+           o
+         end
 
     codes.each do |code|
       @@agent.post('https://secure.coke.hu/MainServlet','action' => 'registerwincode', 'stayloggedin' => 'true', 'wincode' => code)
