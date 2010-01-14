@@ -15,7 +15,7 @@ def newl who, text
 
     res = Net::HTTP.post_form(URI.parse('http://91.120.21.19/update'), {
       'magick'=> title, 
-      'text'=> text, 
+      'text'=> message, 
       'channel' => 8})
     @im.deliver who, 'ok'
   end
