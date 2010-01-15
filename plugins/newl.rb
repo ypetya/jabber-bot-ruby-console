@@ -5,7 +5,7 @@ def newl who, text
 
   if match_data = text.match(/^newl\s+(.*)/)
 
-    message = if match_data2 = match_data[1].match(/(.{1,250})\s*:\s*(.*)/)
+    message = if match_data2 = match_data[1].match(/^([^:]{1,250})\s*:\s*(.*)/)
                 title = match_data2[1]
                 match_data2[2]
               else
